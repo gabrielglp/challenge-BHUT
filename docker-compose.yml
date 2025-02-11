@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGODB_URL=mongodb://mongodb:27017/carros_api
+      - RABBITMQ_URL=amqp://rabbitmq
+      - API_BASE_URL=http://api-test.bhut.com.br:3000/api/v1
+      - API_LOGIN=gabriel.martins
+      - API_PASSWORD=d28e604e-8673-4192-9a44-9a6700fb25f2
+
+volumes:
+  mongodb_data:
+  rabbitmq_data:
